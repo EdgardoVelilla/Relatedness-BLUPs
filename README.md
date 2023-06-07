@@ -8,11 +8,11 @@ This repository contains essential supplementary material for the research paper
 ### Breeding Program Simulations
 The functions included in this repository enable the simulation of a breeding program for a quantitative trait using stochastic simulation based on an infinitesimal model (Fisher 1918; Bulmer 1980). The simulation incorporates both additive and dominance genetic effects, while assuming that the contribution of epistatic sources of variance is negligible. The simulation process involves the following steps:
 
-1. **Base Population**: Founder individuals are sampled from an ideal random mating base population that exhibits no inbreeding and maintains Hardy-Weinberg linkage equilibrium.
+1. **Base Population**: Founder individuals are sampled from an ideal random mating base population with no inbreeding and Hardy-Weinberg linkage equilibrium.
 
-2. **First-Generation Simulation**: Open-pollinated progenies are generated, representing half-sib families. Selection is then conducted based on the performance of the best-performing half-sib families.
+2. **First-Generation Simulation**: Open-pollinated progenies representing half-sib families are generated. Selection is then performed based on the best-performing half-sib families.
 
-3. **Subsequent Generations**: Parents are randomly mated using a half-diallel design. The additive genetic effects are computed based on parental values and the additive Mendelian sampling deviation. Furthermore, an individual's dominance genetic effect, adjusted for the average effect of inbreeding on the mean, is computed following the method described by Hoeschele & VanRaden (1991).
+3. **Subsequent Generations**: Parents undergo random mating through a half-diallel design. The additive genetic effects is computed based on parental values and the additive Mendelian sampling deviation. Furthermore, an individual's dominance genetic effect, adjusted for the average effect of inbreeding on the mean, is computed following the method described by Hoeschele & VanRaden (1991).
 
 4. **Phenotypic Value Simulation**: Phenotypic values are simulated by incorporating the expected mean phenotypic value in the first generation, as well as additive and dominance effects, inbreeding depression, and environmental factors.
 
