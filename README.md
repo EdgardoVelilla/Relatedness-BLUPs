@@ -6,7 +6,7 @@ This repository contains essential supplementary material for the research paper
 ## Features
 
 ### Breeding Program Simulations
-The functions included in this repository enable the simulation of a breeding program for a quantitative trait using stochastic simulation based on an infinitesimal model (Fisher 1918; Bulmer 1980). The simulation takes into account additive and dominance genetic effects while assuming negligible significance of epistatic sources of variance. The simulation process involves the following steps:
+The functions included in this repository enable the simulation of a breeding program for a quantitative trait using stochastic simulation based on an infinitesimal model (Fisher 1918; Bulmer 1980). The simulation considers additive and dominance genetic effects while assuming negligible significance of epistatic sources of variance. The simulation process involves the following steps:
 
 1. **Base Population**: Founder individuals are sampled from an ideal random mating base population that exhibits no inbreeding and maintains Hardy-Weinberg linkage equilibrium.
 
