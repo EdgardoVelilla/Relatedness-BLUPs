@@ -1,16 +1,19 @@
 # Relatedness & BLUPs
-## Supplementary Material 
+## Supplementary Material: Functions for Efficient Prediction of Dominance Effects in Large Breeding Populations
 
-This repository contains supplementary material for the "Efficient Prediction of Dominance Effects in Large Breeding Populations: Unveiling the Power of Mixed-Model Methodology" research paper. This supplementary material provides a collection of additional R functions to enhance the research pipeline. The provided functions facilitate breeding program simulations and genetic evaluations for quantitative traits.
+This repository contains essential supplementary material for the research paper titled "Efficient Prediction of Dominance Effects in Large Breeding Populations: Unveiling the Power of Mixed-Model Methodology." This valuable resource consists of a comprehensive collection of R functions specifically developed to enhance the research pipeline. These functions are dedicated to supporting breeding program simulations and genetic evaluations focused on quantitative traits.
 
 ## Features
 
 ### Breeding Program Simulations
 
-*	Simulate breeding programs for quantitative traits based on the infinitesimal model (Fisher
-1918; Bulmer 1980).
-*	Incorporate both additive and dominance effects to model the genetic architecture of traits.
-*	Utilize stochastic simulation techniques to mimic realistic breeding population dynamics.
+The included functions enable a breeding program's simulation for a quantitative trait using stochastic simulation based on an infinitesimal model (Fisher 1918; Bulmer 1980). The simulation considers additive and dominance genetic effects while assuming negligible significance of epistatic sources of variance.
+
+* In the initial phase, founder individuals are sampled from an ideal random mating base population with no inbreeding and Hardy-Weinberg linkage equilibrium. 
+* The first-generation simulation involves generating open-pollinated progenies representing half-sib families. Selection is then performed based on the best-performing half-sib families. 
+* In subsequent generations, parents are mated under a half-diallel design, and the additive genetic effect of progenies is computed based on parental values and the additive Mendelian sampling deviation.
+* On the other hand, an individual's dominance genetic effect corrected for the average effect of inbreeding on the mean is computed as described by Hoeschele & VanRaden (1991). 
+* Hence, a phenotypic value is simulated by adding the expected mean phenotypic value in the first generation, additive and dominance effects, inbreeding depression, and environmental factors.        
 
 ### Genetic Relatedness Matrices
 Generate the dominance- and family-relatedness matrices using two approaches:
