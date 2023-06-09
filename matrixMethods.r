@@ -574,36 +574,6 @@ makeF.ide <- function(pedigree) {
 }
 
 
-makeF.ide2 <- function(pedigree) {
-  library(data.table)
-  if (!is.data.table(pedigree)) {
-    if (is.data.frame(pedigree) || is.matrix(pedigree)) {
-      pedigree <- as.data.table(pedigree)
-    } else {
-      stop("nothing to do...")
-    }
-  }
-  ped3 <- pedigree[, c(1L:3L)]
-  setnames(
-      ped3,
-      c("TreeID", "mum", "dad")
-  )
-  # m0 is the number of phantom parents
-  m0 <- length(pedigree[mum == 0L | dad == 0L, TreeID])
-  # s is the number of progenies
-  s <- dim(pedigree)[1L] - m0
-  #cross <- as.vector(unique(makeFam(ped3)[, cross]))
-  # label rows/cols of the F matrix
-  #cross.label <- cross[!is.na(cross)]
-  # set the dimension of the F (ide) matrix
-  #q <- length(cross.label)
-  F.ide <- .symDiagonal(s)
-  #F.ide@Dimnames[[1L]] <- F.ide@Dimnames[[2L]] <-
-   # cross.label
-  F.ide[]
-}
-
-
 # function to create the dominance relatedness matrix (D.ide) assuming that
 # full-sib families are unrelated
 
