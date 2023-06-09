@@ -478,7 +478,7 @@ eps <- function(x = 1.0) {
   } else {
     ep <- 2^floor(log2(x)) * .Machine[['double.eps']]
   }
-  ep[]
+  return(ep)
 }
 
 # function to create the M relatedness or its inverse (ginv = TRUE)
