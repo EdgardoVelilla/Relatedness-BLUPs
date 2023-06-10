@@ -1,5 +1,5 @@
 pred.ASRemlSA <- function(path = NULL, # provides the path to the ASReml executable file
-                          workspace = NULL, # c("s7", "s8", "s9"), # 1024 Mb, 2048 Mb, 4096 Mb
+                          workspace = NULL, # c("s7", "s8", "s9"), i.e., 1024 Mb, 2048 Mb and 4096 Mb
                           job.file = NULL, # the name of the .as file
                           Pop.type = c("outbred", "inbred"),
                           pedigree,
