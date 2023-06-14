@@ -22,7 +22,7 @@ In addition to the breeding program simulations, this repository provides specif
 *	The full-sib family genetic relatedness matrix (F), which is based on the expected fraternity coefficients using either Jacquard's condensed coefficients of identity (Jacquard, 1974) or the coefficients of coancestry (Hoeschele and VanRaden, 1991).
 *	The genetic dominance relatedness matrix (D), which uses the expected fraternity coefficients based on Jacquard's condensed coefficients of identity (Jacquard, 1974) or the coefficients of coancestry (Hoeschele and VanRaden, 1991).
 
-# In progress...  
+### In progress...  
 
 # Predictions
 Get the best linear unbiased estimate (BLUE) and best linear unbiased predictor (BLUP) by solving the mixed model equations under an animal model (Henderson, 1950).
