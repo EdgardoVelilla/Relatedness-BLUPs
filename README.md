@@ -24,8 +24,6 @@ In addition to the breeding program simulations, this repository provides specif
 
 ### In progress...  
 
-# Predictions
-Get the best linear unbiased estimate (BLUE) and best linear unbiased predictor (BLUP) by solving the mixed model equations under an animal model (Henderson, 1950).
 
 ## Usage
 To use the functions, follow these steps:
