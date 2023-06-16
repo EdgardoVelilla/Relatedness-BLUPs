@@ -1,6 +1,6 @@
 makeCross <- function(parents,
-					  gen, 
-					  HDD=TRUE){
+		      gen, 
+		      HDD=TRUE){
 							  
 ###     create an Incomplete Diallel Design – no selfed, no reciprocal crosses	  ###	
 males <- females <- parents  
