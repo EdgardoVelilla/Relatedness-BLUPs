@@ -22,9 +22,6 @@ In addition to the breeding program simulations, this repository provides specif
 *	The full-sib family genetic relatedness matrix (F), which is based on the expected fraternity coefficients using either Jacquard's condensed coefficients of identity (Jacquard, 1974) or the coefficients of coancestry (Hoeschele and VanRaden, 1991).
 *	The genetic dominance relatedness matrix (D), which uses the expected fraternity coefficients based on Jacquard's condensed coefficients of identity (Jacquard, 1974) or the coefficients of coancestry (Hoeschele and VanRaden, 1991).
 
-### In progress...  
-
-
 ## Usage
 To use the functions, follow these steps:
 * Install R programming language (https://www.r-project.org/) and ensure it is properly set up.
