@@ -46,7 +46,7 @@ Jacquard, A. (1974). The Genetic Structure of Populations. Springer-Verlag, New 
 Please ensure to appropriately cite the relevant publications and authors mentioned in the description.
 Feel free to explore the functions and modify them to suit your specific research needs.
 If you have any questions or encounter any issues, please open an issue on this repository.
-Note: You can provide additional information such as installation instructions, examples, and a license file within the repository to make it more comprehensive and user-friendly.
+Note: You can provide additional information within the repository, such as installation instructions, examples, and a license file, to make it more comprehensive and user-friendly.
 
 
 
