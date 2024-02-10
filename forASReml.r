@@ -71,9 +71,7 @@ forASReml <- function(G,
 
     library(Matrix, quietly = TRUE) # version 1.5-3
     library(data.table, quietly = TRUE) # version 1.14.6
-
     source("matrixMethods.r")
-
     if (!inherits(G, "dgTMatrix")) {
         if (inherits(G, "dgCMatrix") || inherits(G, "dsCMatrix") ||
             inherits(G, "dgRMatrix")) {
@@ -87,7 +85,6 @@ forASReml <- function(G,
             )
         }
     }
-
     if (Ginv) { # G is an inverse relatedness matrix (.giv in ASReml parlance)
         ginv <- data.table(
             row = G@i + 1,
