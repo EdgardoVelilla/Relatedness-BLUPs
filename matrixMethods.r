@@ -119,9 +119,9 @@ solve.CHMperm <- function(C,
                           b = NULL,
                           cond.number = FALSE,
                           tol = NULL) {
+  
   library(Matrix, quietly = TRUE)
   library(data.table, quietly = TRUE)
-
   source("condNumber.r")
 
   if (inherits(C, "matrix")) {
@@ -131,7 +131,6 @@ solve.CHMperm <- function(C,
     inherits(C, "dgRMatrix")) {
     C <- as(as(C, "sparseMatrix"), "dgCMatrix")
   }
-
   # Cholesky factorization works only for symmetric matrices!
   if (!isSymmetric(C)) {
     C <- forceSymmetric(new(
@@ -150,7 +149,6 @@ solve.CHMperm <- function(C,
       is.Csparse = NA
     )
   }
-
   if (!is.null(tol)) {
     if ((!is.numeric(tol) || length(tol) != 1 || tol < 0)) {
       stop("Argument 'tol' must be a non-negative numeric scalar")
@@ -158,7 +156,6 @@ solve.CHMperm <- function(C,
   } else {
     tol <- .Machine[["double.eps"]]
   }
-
   # compute and check the condition number (cnd) for matrix invertion
   if (cond.number) {
     cnd <- condNumber(C, norm = "2")
@@ -166,7 +163,6 @@ solve.CHMperm <- function(C,
       warning("The Matrix is ill-conditioned")
     }
   }
-
   # build a sparse supernodal (LL' = P'AP) Cholesky factorization of C matrix
   # (Chen et al. 2008)
   CHMp <- Cholesky(C,
@@ -243,7 +239,6 @@ loglik <- function(pedigree,
     tol = 1e-15,
     is.Csparse = NA
   )
-
   if (!is.null(F)) {
     q <- dim(F)[2]
   } else {
@@ -252,7 +247,6 @@ loglik <- function(pedigree,
   p <- dim(X)[2]
   m <- dim(pedigree)[1]
   n <- dim(Z)[1]
-
   # check if pedigree has the inbreeding coefficient ("f")
   # if not, create it
   if (("f" %in% names(pedigree))) {
@@ -261,31 +255,26 @@ loglik <- function(pedigree,
     pedigree[, f := calcInbreeding(pedigree[, c(1L:3L)])]
     f <- as.vector(pedigree[, f])
   }
-
   # create the additive reledtness matrix
   A <- makeKinship.nonadj(
     pedigree = pedigree,
     familyPed = FALSE
   )[["A"]]
-
   # setting sigmas
   sigma2.add <- h2
   sigma2.dom <- H2 - h2
   sigma2.sca <- sigma2.dom / 4
   sigma2.e <- 1 - H2
-
   # setting gammas
   gamma.add <- sigma2.add / sigma2.e
   gamma.sca <- sigma2.sca / sigma2.e
   gamma.dom <- sigma2.dom / sigma2.e
-
   if (!is.null(D) & !is.null(F) & (dim(C)[1] == 2 * m + p + q |
     dim(C)[1] == 2 * m + p + q + 1)) { # strategy S3
     # y ~ Xb + Za + Zd + e 
     # C is the coefficient matrix for additive (a) and dominance (d) effects
     # : C is of order (2m + p + q)x(2m + p + q) # augmented by the MMEs from sca
     cat("Strategy S3 ...\n")
-
     # retrieve the MMEs for mu & additive effects
     if (dim(C)[1] == 2 * m + p + q) {
       C0 <- C[1:(p + m), 1:(p + 2 * m)] # (p + m)x(p + m) matrix
@@ -341,7 +330,6 @@ loglik <- function(pedigree,
     cat("Strategy S2 ...\n")
     strategy <- "S2"
   }
-
   if (strategy == "S1" | strategy == "S3") {
     # create G-submatrices
     G.add.gamm <- gamma.add * A
@@ -358,7 +346,7 @@ loglik <- function(pedigree,
     strategy <- "S2"
     # create the relatedness (M) matrix
     M <- Mend.adj(pedigree)
-
+    
     # create G-submatrices
     G.add.gamm <- gamma.add * A
     G.sca.gamm <- gamma.sca * F
@@ -377,38 +365,29 @@ loglik <- function(pedigree,
       cbind(t(zzeros2), t(zzeros3), G.mend.gamm)
     )
   }
-
   # create the inverse of the coefficient matrix C
   Cinv <- solve.CHMperm(C)
-
   # the covariance matrix, R (error terms) it assumed as an identity matrix
   # i.e., R = sigma2.e / sigma2.e * I = I
   Rinv <- R.gamm <- Diagonal(n)
-
   # An alternative (but more efficient) expression to compute the matrix P
   # is given by (Gilmour et al., 1995, p. 1441)
   P <- Rinv - Rinv %*% W %*% Cinv %*% t(W) %*% Rinv
-
   # the REML log-likelihood (Harville 1977)
   # loglik = -0.5(log|G| + log|R| + log|C| + ypPy)
-
   # Cholesky decomposition is used to compute the log determinant
   # more efficiently and accurately...!
-
   # Note that
   # 0.5*log(det(G)) = sum(log(diag(chol.G)))
   # 0.5*log(det(R)) = sum(log(diag(chol.R)))
   # 0.5*log(det(C)) = sum(log(diag(chol.C)))
-
   # Cholesky decomposition of G, R and C
   chol.G <- chol(G.gamm)
   chol.R <- chol(R.gamm)
   chol.C <- chol(C)
-
   # check if "P" matrix is positive definite, if not use check.PD() function to
   # approximate it to a nearest positive definite matrix (Higham 2002)
   P <- check.PD(P, eig.tol = 1e-6)
-
   # Cholesky decomposition can also be used to compute yp*P*y, i.e.,
   # yp*P*y = yp*(Rp*R)*y = zp*z
   # where yp = t(y); z = Rp*y; Rp = t(R); R = chol(P); zp = t(z)
@@ -423,7 +402,6 @@ loglik <- function(pedigree,
 
   loglik[]
 }
-
 
 #' check.PD() function
 #'
@@ -469,7 +447,6 @@ check.PD <- function(C, # the matrix to be checked
 
 # function that returns the machine epsilon of x object
 # x can be a numeric vector, matrix or array
-
 eps <- function(x = 1.0) {
   stopifnot(is.numeric(x))
   x <- max(abs(x))
@@ -483,7 +460,6 @@ eps <- function(x = 1.0) {
 
 # function to create the M relatedness or its inverse (ginv = TRUE)
 # adjusted (adj = TRUE) or not adjusted by inbreeding (adj = FALSE)
-
 makeM <- function(pedigree,
                   ginv = FALSE, # ginv = TRUE returns the inverse of M
                   adj = FALSE) { # adj = TRUE returns the M matrix adjusted
@@ -507,7 +483,6 @@ makeM <- function(pedigree,
   M <- .symDiagonal(m0 + s)
   M@Dimnames[[1L]] <- M@Dimnames[[2L]] <-
     as.character(pedigree[[1L]])
-
   if (adj) { # diagonal elements of M are adjusted by inbreeding
     if (!("f" %in% names(pedigree))) {
       f <- as.vector(calcInbreeding(pedigree[, c(1L:3L)]))
@@ -573,10 +548,8 @@ makeF.ide <- function(pedigree) {
   F.ide[]
 }
 
-
 # function to build the incidence matrix (Z.dom) relating an individual
 # in the pedigree to its family (if it proceeds)
-
 Z.dom <- function(pedigree) {
   if (!is.data.table(pedigree)) {
     if (is.data.frame(pedigree) || is.matrix(pedigree)) {
@@ -617,9 +590,7 @@ Z.dom <- function(pedigree) {
   ))
 }
 
-
 # function to build the incidence matrix (Z.fam) for full-sib families
-
 Z.fam <- function(trial) {
   if (!is.data.table(trial)) {
     if (is.data.frame(trial) || is.matrix(trial)) {
@@ -662,10 +633,8 @@ Z.fam <- function(trial) {
   Zfam[]
 }
 
-
 # function to build the design matrix (Z) under the assumption that each
 # individual has one record
-
 Z.mat <- function(pedigree) {
   if (!is.data.table(pedigree)) {
     if (is.data.frame(pedigree) || is.matrix(pedigree)) {
@@ -716,14 +685,12 @@ Z.mat <- function(pedigree) {
   return(Z)
 }
 
-
 # function to built the inverse of the numerator relationship matrix
 # based on Quaas (1976)
 
 # Reference:
 # Quaas, R.L. (1976) Computing the diagonal elements of a large numerator
 # relationship matrix. Biometrics 32, 949–953.
-
 Ainverse <- function(pedigree) {
   if (!is.data.table(pedigree)) {
     if (is.data.frame(pedigree) || is.matrix(pedigree)) {
@@ -739,7 +706,6 @@ Ainverse <- function(pedigree) {
     new = c("x", "y", "ai")
   )
   m <- dim(pedigree)[1L]
-
   # build vectors index of unique values of x and y
   ux <- as.vector(unique(output[, x]))
   idx <- base::order(ux)
@@ -756,7 +722,6 @@ Ainverse <- function(pedigree) {
     y = uy,
     idy = idy
   )
-
   output <- index.y[output,
     on = .(y = y)
   ]
@@ -764,7 +729,6 @@ Ainverse <- function(pedigree) {
   output[, (cols) := lapply(.SD, as.integer),
     .SDcols = cols
   ]
-
   Ainv <- (with(
     output,
     Matrix::sparseMatrix(
@@ -780,7 +744,6 @@ Ainverse <- function(pedigree) {
       check = TRUE
     )
   ))
-
   Ainv.s <- forceSymmetric(Ainv,
     uplo = "L"
   )
@@ -791,10 +754,8 @@ Ainverse <- function(pedigree) {
   return(Ainv.s)
 }
 
-
 # function to make a matrix of ones in the compressed sparse column format
 # ("dgCMatrix")
-
 ones.matrix <- function(n.rows, n.cols) {
   m <- Matrix::Matrix(
     nrow = n.rows,
@@ -805,10 +766,8 @@ ones.matrix <- function(n.rows, n.cols) {
   return(m)
 }
 
-
 # function to make a matrix of zeros in the compressed sparse column format
 # ("dgCMatrix")
-
 zeros.matrix <- function(n.rows, n.cols) {
   m <- Matrix::Matrix(
     nrow = n.rows,
@@ -819,9 +778,7 @@ zeros.matrix <- function(n.rows, n.cols) {
   return(m)
 }
 
-
 # function to add a "generation" field to the pedigree
-
 gen.add <- function(pedigree) {
   if (!is.data.table(pedigree)) {
     if (is.data.frame(pedigree) || is.matrix(pedigree)) {
@@ -846,9 +803,7 @@ gen.add <- function(pedigree) {
   ped3[]
 }
 
-
 # function to add a "cross" field to trial/pedigree
-
 makeFam <- function(pedigree) {
   ped.cross <- copy(pedigree)
   setnames(
