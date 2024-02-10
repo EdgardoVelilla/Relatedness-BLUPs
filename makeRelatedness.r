@@ -53,10 +53,8 @@ makeRelatedness <- function(pedigree,
             stop("nothing to do...")
         }
     }
-
     # by default, RAM is 4 GB
     if (is.null(RAM)) RAM <- 4000L
-
     # get only the first three pedigree columns (TreeID, mum, dad)
     # and rename them
     ped3 <- pedigree[, c(1:3)]
@@ -93,10 +91,8 @@ makeRelatedness <- function(pedigree,
         .SD,
         as.integer
     ), .SDcols = cols]
-
     # computing Jacquard’s condensed coefficients of identity
     # by using function idcoefs()
-
     output <- idcoefs(ped3,
         RAM,
         verbose = FALSE
@@ -113,7 +109,6 @@ makeRelatedness <- function(pedigree,
     output <- index.x[output,
         on = .(x = x)
     ]
-
     uy <- as.vector(unique(output[, y]))
     idy <- seq(1:length(uy))
     index.y <- data.table(
@@ -123,15 +118,12 @@ makeRelatedness <- function(pedigree,
     output <- index.y[output,
         on = .(y = y)
     ]
-    
     # convert vectors ux and uy to integers for lookups
     cols <- c("idx", "idy")
     output[, (cols) := lapply(.SD, as.double),
         .SDcols = cols
     ]
-
     m <- max(output[, idx])
-
     # bulding the numerator relationship matrix from
     # condensed coefficients of identity (Jacquard 1974)
     ksp <- 2 * (with(
@@ -164,7 +156,6 @@ makeRelatedness <- function(pedigree,
         tol = 1e-15,
         is.Csparse = NA
     )
-
     # bulding the dominance relationship matrix (Dr) in the outbred population 
     # J7 represents the expected fraternity coefficient in terms of condensed
     # identity coefficients between two non-inbred individuals
@@ -196,7 +187,6 @@ makeRelatedness <- function(pedigree,
         tol = 1e-15,
         is.Csparse = NA
     )
-
     # bulding the dominance relationship matrix
     # in the completely inbred population (DI)
     Di <- (with(
@@ -230,7 +220,6 @@ makeRelatedness <- function(pedigree,
         tol = 1e-15,
         is.Csparse = NA
     )
-
     # bulding the covariance relationship matrix
     # between additive and dominance effects in
     # the homozygous population (ADI)
@@ -265,12 +254,10 @@ makeRelatedness <- function(pedigree,
         tol = 1e-15,
         is.Csparse = NA
     )
-
     # calculate the inbreeding coefficients
     # for each individual (fx, fy)
     output[, fx := J1 + J2 + J3 + J4]
     output[, fy := J1 + J2 + J5 + J6]
-
     # bulding the relationship matrix
     # for the square of the inbreeding depression (ID)
     ID <- (with(
@@ -304,7 +291,6 @@ makeRelatedness <- function(pedigree,
         tol = 1e-15,
         is.Csparse = NA
     )
-
     return(list(
         A = As,
         Dr = Drs,
