@@ -17,7 +17,6 @@ prediction.S3 <- function(pedigree,
     source("matrixMethods.r")
     source("makeKinship.nonadj.r")
     source("makeF.r")
-
     # check if pedigrees and trial objects are a data.table
     # if not, convert it.
     # Also, rename the first three columns as c("TreeID", "mum", "dad")
@@ -36,11 +35,9 @@ prediction.S3 <- function(pedigree,
         object[, TreeID := as.integer(TreeID)]
         return(object)
     }
-
     pedigree <- convertAndRename(pedigree)
     ped.jacquard <- convertAndRename(ped.jacquard)
     trial <- convertAndRename(trial)
-
     # check if pedigree has a column named "gen"
     if (!("gen" %in% names(pedigree))) {
         pedigree[, gen := gen.add(pedigree)[, gen]] # if not, create it
@@ -55,7 +52,6 @@ prediction.S3 <- function(pedigree,
             on = .(TreeID = TreeID)
         ][, gen]]
     }
-
     # If the "cross" column does not exist, add it...!
     if (!("cross" %in% names(trial.tmp))) {
         trial.tmp[, cross := makeFam(trial.tmp)[, cross]]
@@ -72,7 +68,6 @@ prediction.S3 <- function(pedigree,
         by = .(gen)
         ]
     }
-
     # check if the F matrix is provided
     # if not, create it
     if (!is.null(Fj)) { # F matrix is not NULL
@@ -140,7 +135,6 @@ prediction.S3 <- function(pedigree,
     } else if (is.null(Fj) & type == "") {
         stop(paste0("type=", type, " is not an option"))
     }
-
     # create or check the inverse of A matrix
     if (is.null(Ainv)) {
         cat("starting to build Ainv ...\n")
@@ -165,7 +159,6 @@ prediction.S3 <- function(pedigree,
             }
         }
     }
-
     if (ID) { # check if pedigree has the inbreeding coefficient ("f")
         if (!("f" %in% names(pedigree))) { # if not, create it
             pedigree[, f := calcInbreeding(pedigree[, c(1L:3L)])]
@@ -190,13 +183,11 @@ prediction.S3 <- function(pedigree,
     } else {
         model.base <- FALSE
     }
-
     # building the incidence matrices
     n <- dim(trial)[1]
     X <- ones.matrix(n, 1)
     Z <- Z.mat(pedigree)
     Zdom <- Z.dom(pedigree)[["Zdom"]]
-
     # Construction of block matrices
     ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
     #'                                                                           '#
@@ -204,53 +195,42 @@ prediction.S3 <- function(pedigree,
     #'           | D21 D22  |                 | P21 P22 |    | Dinv21 D22inv |   '#
     #'                                                                           '#
     ###~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~###
-
     # create the he inverse of block matrices by using the properties
     # of the  inverse of a partioned matrix (Searle 1971)
     P12 <- -P11 %*% Zdom
     P21 <- t(P12)
     P22 <- t(Zdom) %*% P11 %*% Zdom + 4 * Finv # (8x28)x(28x28)x(28x8)
-
     y <- as.vector(trial.tmp[, pheno])
     # number of full-sib families (q) and number of fixed effects (p)
     q <- dim(Zdom)[2]
     p <- dim(X)[2]
     # number of individuals (m) in the pedigree
     m <- dim(pedigree)[1]
-
     # setting sigmas
     sigma2.add <- h2
     sigma2.dom <- H2 - h2
     sigma2.sca <- sigma2.dom / 4
     sigma2.e <- 1 - H2
-
     alpha1 <- sigma2.e / sigma2.add
     alpha2 <- sigma2.e / sigma2.dom
-
     # build null matrices for setting the MME
     zeros1 <- zeros.matrix(p, q)
     zeros2 <- zeros.matrix(m, q)
     zeros3 <- zeros.matrix(q, 1)
-
     zeros1p <- t(zeros1)
     zeros2p <- t(zeros2)
     zeros3p <- t(zeros3)
-
     # cross-products
     XpX <- crossprod(X)
     XpZ <- crossprod(X, Z)
     Xpy <- crossprod(X, y)
-
     ZpX <- crossprod(Z, X)
     ZpZ <- crossprod(Z)
     Zpy <- crossprod(Z, y)
-
     if (model.base) {
         cat("starting to build & solve MME ...\n")
-
         # the Mixed Model
         # y ~ 1mu + Za + Zd + e
-
         # The mixed model equations (MME) solved are:
 
         # | XpX   XpZ                  XpZ                     0       | mu  | Xpy  |
@@ -263,14 +243,11 @@ prediction.S3 <- function(pedigree,
         c2 <- cbind(ZpX, ZpZ + Ainv * alpha1, ZpZ, zeros2) # (m, p+2m+q)
         c3 <- cbind(ZpX, ZpZ, ZpZ + P11 * alpha2, P12 * alpha2) # (m, p+2m+q)
         c4 <- cbind(zeros1p, zeros2p, P21 * alpha2, P22 * alpha2) # (q, p+2m+q)
-
         # the coefficient matrix
         C <- rbind(c1, c2, c3, c4) # (2m+p+q)x(2m+p+q)
         RHS <- rbind(Xpy, Zpy, Zpy, zeros3) # (p+2m+q)x1
-
         # solving the MME
         sol <- solve.CHMperm(C = C, b = RHS)
-
         # retrieve the overall mean
         mu <- sol[1]
         # retrieve breeding values
@@ -362,12 +339,10 @@ prediction.S3 <- function(pedigree,
 
         zeros4 <- zeros.matrix(1, q)
         zeros4p <- zeros.matrix(q, 1)
-
         # the Mixed Model
         # y ~ 1mu + Zfb + Za + Zd + e
-
         # The mixed model equations (MME) solved are:
-
+      
         # | XpX   XpZf    XpZ               XpZ                  0       | mu  | Xpy  |
         # | fpZpX fpZpZf  fpZpZ             fpZpZ                0       | b   | fpZpy|
         # | ZpX   ZpZf    ZpZ + Ainv*alpha1 ZpZ                  0       | a   | Zpy  |
@@ -384,10 +359,8 @@ prediction.S3 <- function(pedigree,
         # the coefficient matrix
         C <- rbind(c1, c2, c3, c4, c5) # (2m+p+q+1)x(2m+p+q+1)
         RHS <- rbind(Xpy, fpZpy, Zpy, Zpy, zeros4p)
-
         # solving the MME
         sol <- solve.CHMperm(C = C, b = RHS)
-
         # the overall mean
         mu <- sol[1]
         # retrieve the coefficient for inbreeding depression ("id")
@@ -409,7 +382,6 @@ prediction.S3 <- function(pedigree,
         # merge bv, dd and id
         BLUP <- data.table(BLUP_add, BLUP_dom, BLUE_id)
         setnames(BLUP, c("BLUP_add", "BLUP_dom", "id"))
-
         # retrieve sca effects
         BLUP_sca <- data.table(BLUP_sca = sol[seq(
             p + 1 + 2 * m + 1, p + 1 + 2 * m + q
@@ -425,7 +397,6 @@ prediction.S3 <- function(pedigree,
             on = .(cross = cross)
         ][, BLUP_sca]]
         BLUP[, BLUP_dom := ifelse(!is.na(BLUP_sca), BLUP_dom, NA)]
-
         # adjusting dominance effects by "id"
         BLUP[, BLUP_dom.adj := BLUP_dom + id]
         BLUP[, BLUP_sca.adj := BLUP_sca + id]
