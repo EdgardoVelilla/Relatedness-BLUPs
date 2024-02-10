@@ -193,7 +193,6 @@ solve.CHMperm <- function(C,
   }
 }
 
-
 #' loglik() function
 #'
 #' function to compute the REML log-likelihood for strategies I, II or III
