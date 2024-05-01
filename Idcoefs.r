@@ -9,10 +9,9 @@
 #'                                                                                                                                                                                            
 #' This function generates Jacquard’s nine condensed coefficients of identity
 #' for all pairwise combinations between individuals i and j (Jacquard 1974)
-#' based on the recursive algorithm      
-#' proposed by Karigl (1981) and implemented by Abney’s (2009) graphical 
-#' algorithm in the software IdCoefs (C++ codes), availability in:
-#' https://code.google.com/archive/p/idcoefs/downloads  
+#' based on the recursive algorithm proposed by Karigl (1981) and implemented 
+#' by Abney’s (2009) graphical algorithm in the software IdCoefs (C++ codes), 
+#' availability in: https://code.google.com/archive/p/idcoefs/downloads  
 #' See also https://home.uchicago.edu/abney/abney_web/Identity_Coefficients.html                                                                                                              
 #'                                                                                                                                                                                            
 #' Note: This function is a wrapper for the original C ++ software Idcoefs 
